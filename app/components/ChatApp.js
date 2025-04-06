@@ -26,7 +26,7 @@ export default function ChatApp() {
   }, []);
 
   const handleLogin = () => {
-    if (name && password === "clave123") {
+    if (name && password === process.env.PASSWORD) {
       setLoggedIn(true);
     }
   };
