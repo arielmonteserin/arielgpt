@@ -1,6 +1,6 @@
 // app/page.js
 "use client";
-import ChatApp from "./components/ChatApp";
+import ChatApp from "../chatapp-frontend/src/components/ChatApp";
 
 export default function Home() {
   return (
