@@ -7,7 +7,7 @@ LLM = ChatGroq(
     model_name = "llama-3.3-70b-versatile"
 )
 
-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
+
 
 
 
