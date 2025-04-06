@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat Respuestas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #333;
+      color: white;
+    }
+    .container {
+      padding: 20px;
+      overflow-y: auto;
+      max-height: 90vh;
+    }
+    .message {
+      background-color: #444;
+      border-radius: 10px;
+      margin: 10px 0;
+      padding: 15px;
+    }
+    .message strong {
+      color: #9b59b6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="messages-container">
+    <!-- Los mensajes se agregarán aquí -->
+  </div>
+
+  <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
+  <script>
+    // Conectar con el servidor WebSocket
+    //const socket = io("http://192.168.0.111:3001");
+    const socket = io(
+    location.hostname === "localhost"
+      ? "http://localhost:3001"
+      : "wss://NOMBRE_DEL_SERVICIO.onrender.com"
+    );
+
+    // Al conectar, notificar al servidor que esta es la tablet
+    socket.on("connect", () => {
+      socket.emit("tablet_connected");
+    });
+
+    // Recibir mensaje en la tablet
+    //socket.on("receive_message", (msg) => {
+    //  console.log("Mensaje recibido en la tablet:", msg);
+    //  document.getElementById("messages").innerHTML += `<p>${msg.name}: ${msg.text}</p>`;
+    //});
+
+    // Escuchar el evento 'receive_message' para recibir mensajes desde el servidor
+    socket.on("receive_message", (msg) => {
+      // Crear un elemento para el nuevo mensaje
+      const messageElement = document.createElement("div");
+      messageElement.classList.add("message");
+      
+      // Agregar el contenido del mensaje
+      messageElement.innerHTML = `<strong>${msg.name}:</strong> ${msg.text}`;
+
+      // Agregar el nuevo mensaje al contenedor de mensajes
+      document.getElementById("messages-container").appendChild(messageElement);
+
+      // Desplazar hacia abajo el contenedor para mostrar el último mensaje
+      const container = document.getElementById("messages-container");
+      container.scrollTop = container.scrollHeight;
+    });
+  </script>
+</body>
+</html>
