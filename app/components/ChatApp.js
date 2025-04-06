@@ -4,11 +4,12 @@ import { useState, useEffect } from "react";
 import io from "socket.io-client";
 
 //const socket = io("http://localhost:3001");
-const socket = io(
-  typeof window !== "undefined" && window.location.hostname === "localhost"
-    ? "http://localhost:3001"
-    : "wss://arielgpt.onrender.com"
-);
+//const socket = io(
+//  typeof window !== "undefined" && window.location.hostname === "localhost"
+//    ? "http://localhost:3001"
+//    : "wss://arielgpt.onrender.com"
+//);
+const socket = io("https://arielgpt.onrender.com");
 
 
 export default function ChatApp() {

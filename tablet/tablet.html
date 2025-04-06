@@ -37,11 +37,12 @@
   <script>
     // Conectar con el servidor WebSocket
     //const socket = io("http://192.168.0.111:3001");
-    const socket = io(
-    location.hostname === "localhost"
-      ? "http://localhost:3001"
-      : "wss://arielgpt.onrender.com"
-    );
+    //const socket = io(
+    //location.hostname === "localhost"
+    //  ? "http://localhost:3001"
+    //  : "wss://arielgpt.onrender.com"
+    //);
+    const socket = io("https://arielgpt.onrender.com");
 
     // Al conectar, notificar al servidor que esta es la tablet
     socket.on("connect", () => {
