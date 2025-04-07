@@ -27,7 +27,9 @@ export default function ChatApp() {
   }, []);
 
   const handleLogin = () => {
-    if (name && password === process.env.PASSWORD) {
+    //if (name && password === process.env.PASSWORD) {
+    const PASSWORD = import.meta.env.VITE_APP_PASSWORD;
+    if (name && password === PASSWORD) {
       setLoggedIn(true);
     }
   };
