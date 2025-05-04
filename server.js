@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
       // Aquí se invoca la lógica del bot para generar la respuesta
       try {
         //const botResponse = await generateBotResponse(msg.text); // Por ejemplo, utilizando un LLM o servicio externo
-        const botResponse = { name: "Bot", text: `Respuesta a: ${msg.text}`};
+        const botResponse = { name: "ArielGPT", text: `Respuesta a: ${msg.text}`};
 
         // Enviar la respuesta a la tablet y al usuario original
         socket.emit("receive_message", botResponse, socket.id);
@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
           io.to(tabletSocketId).emit("receive_message", botResponse);//`${msg.name}: ${botResponse}`);
         }
       } catch (error) {
-        console.error("Error al generar respuesta del bot:", error);
+        console.error("Error al generar respuesta de ArielGPT:", error);
       }
     }
   });
