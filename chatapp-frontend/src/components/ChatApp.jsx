@@ -28,6 +28,7 @@ export default function ChatApp() {
   const handleLogin = () => {
     //if (name && password === process.env.PASSWORD) {
     const PASSWORD = import.meta.env.VITE_APP_PASSWORD;
+    //const PASSWORD = process.env.PASSWORD;
     if (name && password === PASSWORD) {
       setLoggedIn(true);
     }
@@ -109,7 +110,7 @@ export default function ChatApp() {
 
       {/* Footer */}
       <footer className="text-sm bg-gray-800 p-4 shadow-lg text-center flex-shrink-0">
-        ArielGPT - Todos los derechos reservados
+        ArielGPT - Todos los izquierdos reservados
       </footer>
     </div>
   );
