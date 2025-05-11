@@ -11,7 +11,6 @@ import io from "socket.io-client";
 //);
 const socket = io("https://arielgpt.onrender.com");
 
-
 export default function ChatApp() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -42,61 +41,73 @@ export default function ChatApp() {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg w-80">
-      {!loggedIn ? (
-        <div>
-          <input
-            type="text"
-            placeholder="Nombre"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-2 border rounded mb-2"
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded mb-2"
-          />
-          <button
-            onClick={handleLogin}
-            className="w-full bg-blue-500 text-white p-2 rounded"
-          >
-            Ingresar
-          </button>
-        </div>
-      ) : (
-        <div>
-          <div className="h-40 overflow-y-auto border p-2 mb-2">
-            {/* Filtrar solo los mensajes propios y las respuestas asociadas */}
-            {messages.map((msg, index) => (
-              <div key={index} className="mb-1">
-                <strong>{msg.name}:</strong> {msg.text}
-                {/* Mostrar la respuesta del Bot si existe */}
-                {msg.response && (
-                  <div className="mt-1 text-green-500">
-                    <strong>Bot:</strong> {msg.response}
-                  </div>
-                )}
-              </div>
-            ))}
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white">
+      {/* Header */}
+      <header className="text-2xl font-bold mb-4 bg-blue-600 p-2 rounded shadow-lg">
+        Mateo cumple 18
+      </header>
+
+      <div className="bg-white text-black p-4 rounded-lg shadow-lg w-80">
+        {!loggedIn ? (
+          <div className="text-center">
+            <input
+              type="text"
+              placeholder="Nombre"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-2 border rounded mb-2 text-center"
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-2 border rounded mb-2 text-center"
+            />
+            <button
+              onClick={handleLogin}
+              className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
+            >
+              Ingresar
+            </button>
           </div>
-          <input
-            type="text"
-            placeholder="Escribe un mensaje..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="w-full p-2 border rounded mb-2"
-          />
-          <button
-            onClick={sendMessage}
-            className="w-full bg-green-500 text-white p-2 rounded"
-          >
-            Enviar
-          </button>
-        </div>
-      )}
+        ) : (
+          <div className="text-center">
+            <div className="h-40 overflow-y-auto border p-2 mb-2 bg-gray-100 rounded">
+              {/* Filtrar solo los mensajes propios y las respuestas asociadas */}
+              {messages.map((msg, index) => (
+                <div key={index} className="mb-1">
+                  <strong>{msg.name}:</strong> {msg.text}
+                  {/* Mostrar la respuesta del Bot si existe */}
+                  {msg.response && (
+                    <div className="mt-1 text-green-500">
+                      <strong>Bot:</strong> {msg.response}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            <input
+              type="text"
+              placeholder="Escribe un mensaje..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="w-full p-2 border rounded mb-2 text-center"
+            />
+            <button
+              onClick={sendMessage}
+              className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-700"
+            >
+              Enviar
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <footer className="mt-4 text-sm bg-gray-800 p-2 rounded shadow-lg">
+        ArielGPT - Todos los derechos reservados
+      </footer>
     </div>
   );
 }
