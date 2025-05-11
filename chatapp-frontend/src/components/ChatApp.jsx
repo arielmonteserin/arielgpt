@@ -43,12 +43,12 @@ export default function ChatApp() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white">
       {/* Header */}
-      <header className="text-2xl font-bold bg-blue-600 p-4 shadow-lg text-center">
+      <header className="text-2xl font-bold bg-blue-600 p-4 shadow-lg text-center flex-shrink-0">
         Mateo cumple 18
       </header>
 
       {/* Main Content */}
-      <div className="flex-grow flex items-center justify-center">
+      <div className="flex-grow flex items-center justify-center overflow-y-auto">
         <div className="bg-white text-black p-4 rounded-lg shadow-lg w-80">
           {!loggedIn ? (
             <div className="text-center">
@@ -108,7 +108,7 @@ export default function ChatApp() {
       </div>
 
       {/* Footer */}
-      <footer className="text-sm bg-gray-800 p-4 shadow-lg text-center">
+      <footer className="text-sm bg-gray-800 p-4 shadow-lg text-center flex-shrink-0">
         ArielGPT - Todos los derechos reservados
       </footer>
     </div>
