@@ -18,6 +18,7 @@ export default function ChatApp() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     socket.on("receive_message", (newMessage) => {
@@ -47,6 +48,9 @@ export default function ChatApp() {
     const newMessage = { name, text: message };
     socket.emit("send_message", newMessage);
     setMessage(""); // Clear input after sending
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   };
 
   return (
@@ -110,6 +114,7 @@ export default function ChatApp() {
                   onChange={(e) => setMessage(e.target.value)}
                   className="w-full min-h-[3.5rem] max-h-32 p-3 border-2 border-purple-400 rounded resize-none text-center bg-white focus:outline-none focus:ring-2 focus:ring-purple-400"
                   style={{ fontSize: "1.1rem" }}
+                  ref={inputRef}
                 />
                 <button
                   onClick={sendMessage}

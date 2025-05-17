@@ -129,7 +129,7 @@ function applyConfigurationChange(config) {
       if (!isNaN(newTemperature)) {
         temperatureGroq = newTemperature;
         console.log("Nueva temperatura configurada:", temperatureGroq);
-        return "Nueva temperatura configurada:", temperatureGroq;
+        return "Nueva temperatura configurada:" + temperatureGroq;
       } else {
         console.error("Error: La temperatura no es un número válido.");
         return "Error: La temperatura no es un número válido.";
@@ -148,7 +148,7 @@ function applyConfigurationChange(config) {
         default: return false; // Modelo no válido
       }
       console.log("Nuevo modelo configurado:", modelGroq);
-      return "Nuevo modelo configurado:", modelGroq;
+      return "Nuevo modelo configurado:" + modelGroq;
     }
     // Cambia el modo
     if (config.startsWith(process.env.CONFIG_SET_MODE)) {
@@ -156,7 +156,7 @@ function applyConfigurationChange(config) {
       if (newMode === "start" || newMode === "cena" || newMode === "baile") {
         automatic_mode = newMode;
         console.log("Nuevo modo configurado:", automatic_mode);
-        return "Nuevo modo configurado:", automatic_mode;
+        return "Nuevo modo configurado:" + automatic_mode;
       }
       else {
         return "Modo no válido";
@@ -169,7 +169,7 @@ function applyConfigurationChange(config) {
       if (users[userName]) {
         delete users[userName]; // Eliminar el usuario del objeto users
         console.log("Usuario reseteado:", userName);
-        return "Usuario reseteado:", userName;
+        return "Usuario reseteado:" + userName;
       } else {
         console.error("Error: Usuario no encontrado.");
         return "Error: Usuario no encontrado.";
@@ -183,7 +183,7 @@ function applyConfigurationChange(config) {
         const fact = config.substring(process.env.CONFIG_ADD_FACT.length).trim();
         users[userName].addMessage("system", fact); // Agregar el hecho al historial del usuario
         console.log("Hecho agregado al usuario:", userName, fact);
-        return "Hecho agregado al usuario:", userName, fact;
+        return "Hecho agregado al usuario:" + userName + " " + fact;
       } else {
         console.error("Error: Usuario no encontrado.");
         return "Error: Usuario no encontrado.";
@@ -200,11 +200,23 @@ function applyConfigurationChange(config) {
       return "Lista de usuarios:\n" + userList;
     }
 
+    // Retorna la configuración actual
+    if (config.startsWith(process.env.CONFIG_GET_CONFIG)) {
+      const currentConfig = `
+        Configuración actual:
+        - Temperatura: ${temperatureGroq}
+        - Modelo: ${modelGroq}
+        - Modo: ${automatic_mode}
+      `;
+      console.log("Configuración actual:", currentConfig);
+      return "Configuración actual:\n" + currentConfig;
+    }
+
     return "Comando no reconocido."; // Comando no reconocido
   }
   catch (error) {
     console.error("Error al aplicar la configuración:", error);
-    return "Error al aplicar la configuración:", error;
+    return "Error al aplicar la configuración:" +  error;
   }
 }
 
