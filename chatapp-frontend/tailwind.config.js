@@ -1,11 +1,18 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,jsx,ts,tsx}", // Asegúrate de incluir esta línea
+    "./src/**/*.{js,jsx,ts,tsx}", // Asegúrate de incluir jsx aquí
   ],
   theme: {
-    extend: {},
+    extend: {
+      animation: { // Asegúrate de que las animaciones estén habilitadas
+        bounce: 'bounce 1s infinite',
+      }
+    },
   },
   plugins: [],
-};
+  corePlugins: {
+    animation: true, // Debe ser true (valor por defecto)
+  }
+}

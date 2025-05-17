@@ -26,7 +26,7 @@
       font-size: 2.0rem;
     }
     .message strong {
-      color: #ff9100;
+      color: #4be0bb;
     }
     .fullscreen-button {
       position: fixed;
@@ -60,26 +60,40 @@
     //  : "wss://arielgpt.onrender.com"
     //);
     const socket = io("https://arielgpt.onrender.com");
+    //const socket = io("http://localhost:3001");
 
     // Al conectar, notificar al servidor que esta es la tablet
     socket.on("connect", () => {
       socket.emit("tablet_connected");
     });
 
-    // Recibir mensaje en la tablet
-    //socket.on("receive_message", (msg) => {
-    //  console.log("Mensaje recibido en la tablet:", msg);
-    //  document.getElementById("messages").innerHTML += `<p>${msg.name}: ${msg.text}</p>`;
-    //});
+    // Función para generar un color claro y vibrante a partir del nombre de usuario
+    function getUserColor(name) {
+      // Excluye ArielGPT (usa el color CSS por defecto)
+      if (name === "ArielGPT") return "";
+      // Genera un color HSL vibrante y claro basado en el hash del nombre
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const hue = Math.abs(hash) % 360;
+      return `hsl(${hue}, 85%, 65%)`;
+    }
 
     // Escuchar el evento 'receive_message' para recibir mensajes desde el servidor
     socket.on("receive_message", (msg) => {
       // Crear un elemento para el nuevo mensaje
       const messageElement = document.createElement("div");
       messageElement.classList.add("message");
-      
-      // Agregar el contenido del mensaje
-      messageElement.innerHTML = `<strong>${msg.name}:</strong> ${msg.text}`;
+
+      // Determina el color del nombre
+      const nameColor = getUserColor(msg.name);
+      const nameStyle = nameColor
+        ? `style="color: ${nameColor};"`
+        : ""; // Si es ArielGPT, no aplica color en línea
+
+      // Renderiza el nombre con color personalizado o el color por defecto para ArielGPT
+      messageElement.innerHTML = `<strong ${nameStyle}>${msg.name}:</strong> ${msg.text}`;
 
       // Agregar el nuevo mensaje al contenedor de mensajes
       document.getElementById("messages-container").appendChild(messageElement);
@@ -87,6 +101,11 @@
       // Desplazar hacia abajo el contenedor para mostrar el último mensaje
       const container = document.getElementById("messages-container");
       container.scrollTop = container.scrollHeight;
+    });
+
+    // Escuchar el evento 'clear' para eliminar todos los mensajes recibidos
+    socket.on("clear", () => {
+      document.getElementById("messages-container").innerHTML = "";
     });
 
     // Función para activar el modo de pantalla completa

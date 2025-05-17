@@ -1,6 +1,6 @@
 // app/components/ChatApp.js
-"use client";
-import { useState, useEffect } from "react";
+//"use client";
+import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 
 //const socket = io("http://localhost:3001");
@@ -17,6 +17,7 @@ export default function ChatApp() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     socket.on("receive_message", (newMessage) => {
@@ -25,10 +26,18 @@ export default function ChatApp() {
     return () => socket.off("receive_message");
   }, []);
 
+  useEffect(() => {
+    // Scroll al último mensaje cuando cambian los mensajes
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   const handleLogin = () => {
     //if (name && password === process.env.PASSWORD) {
-    const PASSWORD = import.meta.env.VITE_APP_PASSWORD;
-    //const PASSWORD = process.env.PASSWORD;
+    //const PASSWORD = import.meta.env.VITE_APP_PASSWORD;
+    //const PASSWORD = "1234"
+    const PASSWORD = process.env.PASSWORD;
     if (name && password === PASSWORD) {
       setLoggedIn(true);
     }
@@ -42,17 +51,22 @@ export default function ChatApp() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white">
+    <div className="flex flex-col min-h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white overflow-x-hidden">
       {/* Header */}
-      <header className="text-2xl font-bold bg-blue-600 p-4 shadow-lg text-center flex-shrink-0">
-        Mateo cumple 18
+      <header className="text-2xl font-bold bg-[#10A37F] p-4 shadow-lg text-center flex-shrink-0">
+        <span className="animate-bounce bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-white">
+          ¡Matu cumple 18!
+        </span>
       </header>
 
       {/* Main Content */}
-      <div className="flex-grow flex items-center justify-center overflow-y-auto">
-        <div className="bg-white text-black p-4 rounded-lg shadow-lg w-80">
+      <div className="flex-grow flex items-center justify-center w-full">
+        <div className="bg-white text-black p-0 rounded-lg shadow-lg w-full max-w-2xl flex flex-col h-[80vh]">
           {!loggedIn ? (
-            <div className="text-center">
+            <div className="text-center p-4">
+              <div className="mb-4 text-lg font-semibold text-purple-700">
+                ¡Bienvenido a los 18 de Matu! Ingresá tu nombre y la contraseña para chatear con ArielGPT.
+              </div>
               <input
                 type="text"
                 placeholder="Nombre"
@@ -69,40 +83,42 @@ export default function ChatApp() {
               />
               <button
                 onClick={handleLogin}
-                className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
+                className="w-full bg-[#10A37F] text-white p-2 rounded hover:bg-blue-700"
               >
                 Ingresar
               </button>
             </div>
           ) : (
-            <div className="text-center">
-              <div className="h-40 overflow-y-auto border p-2 mb-2 bg-gray-100 rounded">
+            <div className="flex flex-col h-full">
+              <div className="flex-1 overflow-y-auto border p-2 mb-2 rounded bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 w-full">
                 {/* Scrollable messages */}
                 {messages.map((msg, index) => (
-                  <div key={index} className="mb-1">
-                    <strong>{msg.name}:</strong> {msg.text}
-                    {/* Mostrar la respuesta del Bot si existe */}
+                  <div key={index} className="mb-2">
+                    <strong className="text-orange-600">{msg.name}:</strong> {msg.text}
                     {msg.response && (
-                      <div className="mt-1 text-green-500">
+                      <div className="mt-1 text-green-600">
                         <strong>Bot:</strong> {msg.response}
                       </div>
                     )}
                   </div>
                 ))}
+                <div ref={messagesEndRef} />
               </div>
-              <input
-                type="text"
-                placeholder="Escribe un mensaje..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="w-full p-2 border rounded mb-2 text-center"
-              />
-              <button
-                onClick={sendMessage}
-                className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-700"
-              >
-                Enviar
-              </button>
+              <div className="mt-auto flex flex-col gap-2 p-2 bg-gradient-to-r from-purple-200 via-pink-200 to-red-200 w-full">
+                <textarea
+                  placeholder="Escribe un mensaje..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="w-full min-h-[3.5rem] max-h-32 p-3 border-2 border-purple-400 rounded resize-none text-center bg-white focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  style={{ fontSize: "1.1rem" }}
+                />
+                <button
+                  onClick={sendMessage}
+                  className="w-full bg-gradient-to-r from-green-400 to-green-600 text-white p-3 rounded font-bold text-lg hover:from-green-500 hover:to-green-700 transition"
+                >
+                  Enviar
+                </button>
+              </div>
             </div>
           )}
         </div>
