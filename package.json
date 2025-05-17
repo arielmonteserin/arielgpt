@@ -106,7 +106,6 @@
     "jsonfile": "^6.1.0",
     "kleur": "^3.0.3",
     "lightningcss": "^1.29.2",
-    "lightningcss-win32-x64-msvc": "^1.29.2",
     "log-symbols": "^5.1.0",
     "math-intrinsics": "^1.1.0",
     "media-typer": "^0.3.0",
