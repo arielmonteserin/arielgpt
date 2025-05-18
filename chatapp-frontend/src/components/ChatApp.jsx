@@ -69,7 +69,7 @@ export default function ChatApp() {
     if (selectedRealName && users.includes(selectedRealName)) {
       userToSend = "#" + selectedRealName;
     }
-    if (name && password === "1234") { //PASSWORD
+    if (name && password === PASSWORD) { //PASSWORD
       setLoggedIn(true);
       setName(userToSend); // Sobrescribe el nombre con el valor a enviar
     }
