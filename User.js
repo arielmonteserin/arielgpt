@@ -28,7 +28,8 @@ class User {
     console.log(`Messages before summarization: ${JSON.stringify(this.messages)}`);
     
     this.messages = this.messages.slice(0, 1).concat(this.messages.slice(-preserveLastMsg));
-    this.messages.unshift({ role: "system", content: summary });
+    // Insertar el resumen en la posición 1 (después del primer mensaje)
+    this.messages.splice(1, 0, { role: "system", content: summary });
 
     console.log(`Messages after summarization: ${JSON.stringify(this.messages)}`);
   }
