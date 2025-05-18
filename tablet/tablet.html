@@ -49,6 +49,7 @@
 
   <!-- Botón para activar pantalla completa -->
   <button class="fullscreen-button" id="fullscreen-button">FS</button>
+  <button class="fullscreen-button" id="colorful-button" style="right: 80px;">C</button>
 
   <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
   <script>
@@ -121,6 +122,40 @@
       }
 
       // Ocultar el botón después de activar pantalla completa
+      fullscreenButton.style.display = "none";
+    });
+
+    // Gradientes coloridos animados
+    let colorInterval = null;
+    function startColorfulBackground() {
+      if (colorInterval) return; // Ya está corriendo
+      let step = 0;
+      colorInterval = setInterval(() => {
+        // Genera dos colores HSL vibrantes
+        const h1 = (step * 23) % 360;
+        const h2 = (h1 + 120) % 360;
+        const bg = `linear-gradient(135deg, hsl(${h1},85%,55%), hsl(${h2},85%,65%))`;
+        document.body.style.background = bg;
+        step++;
+      }, 100);
+    }
+
+    // Botón Color: pantalla completa + fondo animado
+    const colorfulButton = document.getElementById("colorful-button");
+    colorfulButton.addEventListener("click", () => {
+      // Pantalla completa
+      const docElement = document.documentElement;
+      if (docElement.requestFullscreen) {
+        docElement.requestFullscreen();
+      } else if (docElement.webkitRequestFullscreen) {
+        docElement.webkitRequestFullscreen();
+      } else if (docElement.msRequestFullscreen) {
+        docElement.msRequestFullscreen();
+      }
+      // Fondo animado
+      startColorfulBackground();
+      // Oculta el botón después de activar
+      colorfulButton.style.display = "none";
       fullscreenButton.style.display = "none";
     });
   </script>

@@ -212,6 +212,32 @@ function applyConfigurationChange(config) {
       return "Configuración actual:\n" + currentConfig;
     }
 
+    // Envia un mensaje directo a la tablet
+    if (config.startsWith(process.env.CONFIG_DMSG)) {
+      const message = config.substring(process.env.CONFIG_DMSG.length).trim();
+      if (tabletSocketId) {
+        io.to(tabletSocketId).emit("receive_message", { name: "ArielGPT", text: message });
+        console.log("Mensaje enviado a la tablet:", message);
+        return "Mensaje enviado a la tablet:" + message;
+      } else {
+        console.error("Error: Tablet no conectada.");
+        return "Error: Tablet no conectada.";
+      }
+    }
+
+    // Retorna la lista de mensajes de un usuario
+    if (config.startsWith(process.env.CONFIG_GET_MSGS)) {
+      const userName = config.substring(process.env.CONFIG_GET_MSGS.length).trim();
+      if (users[userName]) {
+        const userMessages = users[userName].getMessages().map((msg) => `${msg.role}: ${msg.content}`).join("\n");
+        console.log("Lista de mensajes del usuario:", userName, userMessages);
+        return "Lista de mensajes del usuario:\n" + userMessages;
+      } else {
+        console.error("Error: Usuario no encontrado.");
+        return "Error: Usuario no encontrado.";
+      }
+    }
+
     return "Comando no reconocido."; // Comando no reconocido
   }
   catch (error) {
@@ -234,7 +260,13 @@ io.on("connection", (socket) => {
 
   // Cuando un usuario envía un mensaje
   socket.on("send_message", async (msg) => {
-
+    // Si el mensaje recibido comienza con "#" es un nombre real
+    let isUserWithContext = false
+    
+    if (msg.name.startsWith("#")) {
+      isUserWithContext = true;
+      msg.name = msg.name.substring(1); // Eliminar el símbolo "#" del nombre
+    }
     // Reenviamos el mensaje al usuario que lo envió
     socket.emit("receive_message", msg);
 
@@ -260,7 +292,10 @@ io.on("connection", (socket) => {
       if (fistTimeUser) {
         // Acá se debe recuperar el contexto del usuario desde el archivo JSON
         // y asignarlo al nuevo objeto User
-        let userContext = getUserContextFromJson(msg.name);
+        let userContext = "unknown"; // Inicializamos el contexto como "unknown"
+        if (isUserWithContext)
+          userContext = getUserContextFromJson(msg.name);
+        
         if (userContext === "unknown") {
           userContext = unknownContext + " Su nombre de usuario es " + msg.name + "."; // Asignar contexto desconocido mas el nombre del usuario
         }
@@ -325,7 +360,7 @@ io.on("connection", (socket) => {
     console.log("Usuario desconectado", socket.id);
 
     // Eliminar al usuario de la lista de usuarios conectados
-    delete users[socket.id];
+    //delete users[socket.id];
 
     if (socket.id === tabletSocketId) {
       tabletSocketId = null; // Limpiamos el socket.id si la tablet se desconecta
@@ -341,30 +376,11 @@ io.on("connection", (socket) => {
  */
 function getUserContextFromJson(name) {
   try {
-    // Leer y parsear el archivo JSON
-    //const contextData = JSON.parse(fs.readFileSync("context.json", "utf8"));
-
-    // Obtener todas las claves del archivo JSON
-    const keys = Object.keys(contextData);
-
-    // Buscar la clave más cercana al nombre del usuario
-    let closestKey = null;
-    let smallestDistance = Infinity;
-
-    keys.forEach((key) => {
-      const distance = levenshtein.get(name.toLowerCase(), key.toLowerCase());
-      if (distance < smallestDistance) {
-        smallestDistance = distance;
-        closestKey = key;
-      }
-    });
-
-    // Si la distancia es razonable, devolvemos el contexto asociado
-    if (smallestDistance <= 3) { // Ajusta este umbral según tus necesidades
-      return contextData[closestKey];
+    // Busca exactamente la clave dentro del contextData
+    if (contextData.hasOwnProperty(name)) {
+      return contextData[name];
     }
-
-    // Si no se encuentra una clave similar, devolvemos un valor predeterminado
+    // Si no se encuentra una clave exacta, devolvemos un valor predeterminado
     return "unknown" || "No se encontró contexto para el usuario.";
   } catch (error) {
     console.error("Error al leer el archivo context.json:", error);

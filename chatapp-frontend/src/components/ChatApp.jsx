@@ -17,6 +17,8 @@ export default function ChatApp() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [selectedRealName, setSelectedRealName] = useState("");
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -34,12 +36,42 @@ export default function ChatApp() {
     }
   }, [messages]);
 
+  // Cargar users.json al montar el componente
+  useEffect(() => {
+    fetch("/users.json")
+      .then((res) => res.json())
+      .then((data) => {
+        // Si el archivo tiene una propiedad 'users' que es un array, úsala
+        if (data && Array.isArray(data.users)) {
+          setUsers(data.users);
+        } else if (Array.isArray(data)) {
+          setUsers(data);
+        } else {
+          setUsers([]);
+        }
+      })
+      .catch(() => setUsers([]));
+  }, []);
+
+  // Cuando se selecciona un nombre real, setea el nombre real en el input
+  useEffect(() => {
+    if (selectedRealName) {
+      setName(selectedRealName); // Mostrar el nombre real en el input
+    } else {
+      setName(""); // Borra el campo de texto si se deselecciona
+    }
+  }, [selectedRealName]);
+
   const handleLogin = () => {
-    //if (name && password === process.env.PASSWORD) {
     const PASSWORD = import.meta.env.VITE_PASSWORD;
-    //const PASSWORD = process.env.PASSWORD;
-    if (name && password === PASSWORD) {
+    let userToSend = name;
+    // Si seleccionó un nombre real de la lista, antepone #
+    if (selectedRealName && users.includes(selectedRealName)) {
+      userToSend = "#" + selectedRealName;
+    }
+    if (name && password === "1234") { //PASSWORD
       setLoggedIn(true);
+      setName(userToSend); // Sobrescribe el nombre con el valor a enviar
     }
   };
 
@@ -48,17 +80,17 @@ export default function ChatApp() {
     const newMessage = { name, text: message };
     socket.emit("send_message", newMessage);
     setMessage(""); // Clear input after sending
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+    //if (inputRef.current) {
+    //  inputRef.current.focus();
+    //}
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white overflow-x-hidden">
       {/* Header */}
       <header className="text-2xl font-bold bg-[#10A37F] p-4 shadow-lg text-center flex-shrink-0">
-        <span className="animate-bounce bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-white">
-          ¡Matu cumple 18!
+        <span className="animate-bounce bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-white inline-flex items-center gap-2">
+          🎉 <span className="animate-pulse">¡Matu cumple 18!</span> 🥳
         </span>
       </header>
 
@@ -68,7 +100,23 @@ export default function ChatApp() {
           {!loggedIn ? (
             <div className="text-center p-4">
               <div className="mb-4 text-lg font-semibold text-purple-700">
-                ¡Bienvenido a los 18 de Matu! Ingresá tu nombre y la contraseña para chatear con ArielGPT.
+                ¡Bienvenido a los 18 de Matu (Toto para los amigos)! Ingresá tu nombre y la contraseña para chatear con ArielGPT.
+              </div>
+              {/* DropDownList de nombres reales */}
+              <select
+                className="w-full p-2 border rounded mb-2 text-center bg-white"
+                value={selectedRealName}
+                onChange={e => setSelectedRealName(e.target.value)}
+              >
+                <option value="">Seleccioná tu nombre real (opcional)</option>
+                {users.map((realName) => (
+                  <option key={realName} value={realName}>
+                    {realName}
+                  </option>
+                ))}
+              </select>
+              <div className="mb-2 text-sm text-purple-700">
+                En caso de no estar en la lista, ingresa tu nombre:
               </div>
               <input
                 type="text"
@@ -76,6 +124,7 @@ export default function ChatApp() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full p-2 border rounded mb-2 text-center"
+                disabled={!!selectedRealName}
               />
               <input
                 type="password"
