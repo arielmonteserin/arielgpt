@@ -24,8 +24,13 @@ class User {
   }
 
   summarizeMessages(summary, preserveLastMsg) {
+    console.log(`Summarizing messages for ${this.name}`);
+    console.log(`Messages before summarization: ${JSON.stringify(this.messages)}`);
+    
     this.messages = this.messages.slice(0, 1).concat(this.messages.slice(-preserveLastMsg));
     this.messages.unshift({ role: "system", content: summary });
+
+    console.log(`Messages after summarization: ${JSON.stringify(this.messages)}`);
   }
 
   setContext(context) {
