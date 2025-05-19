@@ -201,7 +201,7 @@ function applyConfigurationChange(config) {
     }
 
     // Retorna la configuración actual
-    if (config.startsWith(process.env.CONFIG_GET_CONFIG)) {
+    if (config.startsWith(process.env.CONFIG_GET_CONF)) {
       const currentConfig = `
         Configuración actual:
         - Temperatura: ${temperatureGroq}
