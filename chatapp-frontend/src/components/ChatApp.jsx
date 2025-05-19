@@ -19,6 +19,7 @@ export default function ChatApp() {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedRealName, setSelectedRealName] = useState("");
+  const [imgEnabled, setImgEnabled] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -62,6 +63,15 @@ export default function ChatApp() {
     }
   }, [selectedRealName]);
 
+  useEffect(() => {
+    socket.on("enable_img", () => {
+      setImgEnabled(true);
+    });
+    return () => {
+      socket.off("enable_img");
+    };
+  }, []);
+
   const handleLogin = () => {
     const PASSWORD = import.meta.env.VITE_PASSWORD;
     let userToSend = name;
@@ -83,6 +93,17 @@ export default function ChatApp() {
     //if (inputRef.current) {
     //  inputRef.current.focus();
     //}
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      const imgData = evt.target.result;
+      socket.emit("upload_img", { name, imgData });
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -171,6 +192,23 @@ export default function ChatApp() {
                 >
                   Enviar
                 </button>
+                {imgEnabled && (
+                  <div className="w-full mt-2 flex flex-col items-center">
+                    <label
+                      htmlFor="img-upload"
+                      className="w-full bg-gradient-to-r from-pink-400 to-purple-500 text-white p-3 rounded font-bold text-lg text-center cursor-pointer hover:from-pink-500 hover:to-purple-600 transition"
+                    >
+                      Subir foto
+                    </label>
+                    <input
+                      id="img-upload"
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={handleImageUpload}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           )}

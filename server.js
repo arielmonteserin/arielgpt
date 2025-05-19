@@ -121,7 +121,7 @@ async function generateBotSummary(user) {
 }
 
 // Función que aplica un cambio de configuración basado en el mensaje recibido
-function applyConfigurationChange(config) {
+function applyConfigurationChange(config, socket) {
   try {
     // Cambia la temperatura
     if (config.startsWith(process.env.CONFIG_TEMP)) {
@@ -238,6 +238,13 @@ function applyConfigurationChange(config) {
       }
     }
 
+    // Habilita el envío de imágenes
+    if (config.startsWith(process.env.CONFIG_ENABLE_IMG)) {
+        socket.emit("enable_img");
+        console.log("Imagen habilitada");
+        return "Imagen habilitada";
+    }
+
     return "Comando no reconocido."; // Comando no reconocido
   }
   catch (error) {
@@ -274,7 +281,7 @@ io.on("connection", (socket) => {
     if (msg.text.startsWith(process.env.CONFIG_PREFIX)) {
       // Es un mensaje de configuración
       const config = msg.text.substring(process.env.CONFIG_PREFIX.length).trim();
-      socket.emit("receive_message", { name: "ArielGPT", text: applyConfigurationChange(config) });
+      socket.emit("receive_message", { name: "ArielGPT", text: applyConfigurationChange(config, socket) });
     }
     else {
       // Reenviamos el mensaje a la tablet, si está conectada
@@ -367,6 +374,24 @@ io.on("connection", (socket) => {
       console.log("Tablet desconectada");
     }
   });
+
+  // Manejar imagen subida por el usuario
+  socket.on("upload_img", (data) => {
+    // data: { name, imgData }
+    // Aquí puedes guardar la imagen, reenviarla, o procesarla como desees.
+    // Por ejemplo, reenviar la imagen a la tablet:
+    if (tabletSocketId) {
+      io.to(tabletSocketId).emit("receive_message", {
+        name: data.name,
+        text: "[Imagen enviada]",
+        imgData: data.imgData
+      });
+    }
+    // También puedes guardar la imagen en disco si lo deseas:
+    // const base64Data = data.imgData.replace(/^data:image\/\w+;base64,/, "");
+    // fs.writeFileSync(`uploads/${Date.now()}_${data.name}.png`, base64Data, {encoding: 'base64'});
+    console.log(`Imagen recibida de ${data.name}`);
+  });
 });
 
 /**
@@ -417,11 +442,10 @@ setInterval(async () => {
   // Reenviamos el mensaje a la tablet, si está conectada
   // Generar respuesta del bot
   try {
-    const botResponseText = await generateBotAutomaticResponse(); // Genera respuesta en base al modo
-    const botResponse = { name: "ArielGPT", text: botResponseText };
-
     // Enviar la respuesta a la tablet
     if (tabletSocketId) {
+      const botResponseText = await generateBotAutomaticResponse(); // Genera respuesta en base al modo
+      const botResponse = { name: "ArielGPT", text: botResponseText };
       io.to(tabletSocketId).emit("clear");
       console.log("Enviando mensaje a la tablet:", botResponse);
       io.to(tabletSocketId).emit("receive_message", botResponse);

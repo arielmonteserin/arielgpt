@@ -91,10 +91,15 @@
       const nameColor = getUserColor(msg.name);
       const nameStyle = nameColor
         ? `style="color: ${nameColor};"`
-        : ""; // Si es ArielGPT, no aplica color en línea
+        : "";
 
       // Renderiza el nombre con color personalizado o el color por defecto para ArielGPT
-      messageElement.innerHTML = `<strong ${nameStyle}>${msg.name}:</strong> ${msg.text}`;
+      let html = `<strong ${nameStyle}>${msg.name}:</strong> ${msg.text}`;
+      // Si hay imagen, la muestra debajo del texto
+      if (msg.imgData) {
+        html += `<br/><img src="${msg.imgData}" alt="imagen enviada" style="width: 100%; height: auto; border-radius: 10px; margin-top: 10px; display: block;" />`;
+      }
+      messageElement.innerHTML = html;
 
       // Agregar el nuevo mensaje al contenedor de mensajes
       document.getElementById("messages-container").appendChild(messageElement);
