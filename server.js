@@ -391,7 +391,7 @@ io.on("connection", (socket) => {
     if (tabletSocketId) {
       io.to(tabletSocketId).emit("receive_message", {
         name: data.name,
-        text: "[Imagen enviada]",
+        text: " ",
         imgData: data.imgData
       });
     }

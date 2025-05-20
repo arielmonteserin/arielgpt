@@ -229,18 +229,33 @@ export default function ChatApp() {
                   Enviar
                 </button>
                 {imgEnabled && (
-                  <div className="w-full mt-2 flex flex-col items-center">
+                  <div className="w-full mt-2 flex flex-col items-center gap-2">
+                    {/* Botón para sacar foto con cámara */}
                     <label
-                      htmlFor="img-upload"
+                      htmlFor="img-upload-camera"
                       className="w-full bg-gradient-to-r from-pink-400 to-purple-500 text-white p-3 rounded font-bold text-lg text-center cursor-pointer hover:from-pink-500 hover:to-purple-600 transition"
                     >
-                      Subir foto
+                      Sacar foto con cámara
                     </label>
                     <input
-                      id="img-upload"
+                      id="img-upload-camera"
                       type="file"
                       accept="image/*"
                       capture="environment"
+                      style={{ display: "none" }}
+                      onChange={handleImageUpload}
+                    />
+                    {/* Botón para subir foto desde archivos */}
+                    <label
+                      htmlFor="img-upload-file"
+                      className="w-full bg-gradient-to-r from-purple-400 to-pink-500 text-white p-3 rounded font-bold text-lg text-center cursor-pointer hover:from-purple-500 hover:to-pink-600 transition"
+                    >
+                      Subir foto desde archivos
+                    </label>
+                    <input
+                      id="img-upload-file"
+                      type="file"
+                      accept="image/*"
                       style={{ display: "none" }}
                       onChange={handleImageUpload}
                     />
