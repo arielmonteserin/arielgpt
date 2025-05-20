@@ -185,6 +185,14 @@ function applyConfigurationChange(config, socket) {
         console.log("Hecho agregado al usuario:", userName, fact);
         return "Hecho agregado al usuario:" + userName + " " + fact;
       } else {
+        // El usuario no ha sido creado aún, por lo tanto lo agregamos al contexto del usuario
+        const fact = config.substring(process.env.CONFIG_ADD_FACT.length).trim();
+        if (contextData.hasOwnProperty(userName)) {
+          contextData[userName] += fact; // Actualizar el contexto del usuario
+          //fs.writeFileSync("context.json", JSON.stringify(contextData, null, 2)); // Guardar el contexto actualizado en el archivo JSON
+          console.log("Hecho agregado al usuario:", userName, fact);
+          return "Hecho agregado al usuario:" + userName + " " + fact;
+        }
         console.error("Error: Usuario no encontrado.");
         return "Error: Usuario no encontrado.";
       }

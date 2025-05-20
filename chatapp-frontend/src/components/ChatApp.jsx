@@ -98,10 +98,46 @@ export default function ChatApp() {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // Si la imagen es menor a 1MB, la enviamos tal cual
+    if (file.size <= 1024 * 1024) {
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const imgData = evt.target.result;
+        socket.emit("upload_img", { name, imgData });
+      };
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    // Si la imagen es mayor a 1MB, la reducimos usando un canvas
+    const img = new window.Image();
     const reader = new FileReader();
     reader.onload = function(evt) {
-      const imgData = evt.target.result;
-      socket.emit("upload_img", { name, imgData });
+      img.onload = function() {
+        // Redimensionar manteniendo proporción, ancho máx 1280px
+        const MAX_WIDTH = 1280;
+        const scale = Math.min(1, MAX_WIDTH / img.width);
+        const width = img.width * scale;
+        const height = img.height * scale;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Exportar a jpeg calidad 0.7
+        let imgData = canvas.toDataURL("image/jpeg", 0.7);
+
+        // Si sigue siendo >1MB, baja la calidad a 0.5
+        if (imgData.length > 1024 * 1024 * 1.37) { // base64 es ~1.37x el tamaño binario
+          imgData = canvas.toDataURL("image/jpeg", 0.5);
+        }
+
+        socket.emit("upload_img", { name, imgData });
+      };
+      img.src = evt.target.result;
     };
     reader.readAsDataURL(file);
   };
@@ -204,6 +240,7 @@ export default function ChatApp() {
                       id="img-upload"
                       type="file"
                       accept="image/*"
+                      capture="environment"
                       style={{ display: "none" }}
                       onChange={handleImageUpload}
                     />
