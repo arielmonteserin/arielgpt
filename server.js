@@ -167,6 +167,7 @@ function applyConfigurationChange(config, socket) {
     // Resetea el usuario
     if (config.startsWith(process.env.CONFIG_RESET_USER)) {
       const userName = config.substring(process.env.CONFIG_RESET_USER.length).trim();
+      console.log("UserName reset", userName);
       if (users[userName]) {
         delete users[userName]; // Eliminar el usuario del objeto users
         console.log("Usuario reseteado:", userName);
@@ -180,14 +181,16 @@ function applyConfigurationChange(config, socket) {
     // Agrega un hecho al usuario
     if (config.startsWith(process.env.CONFIG_ADD_FACT)) {
       const userName = config.substring(process.env.CONFIG_ADD_FACT.length, config.indexOf("-")).trim();
+      console.log("UserName add", userName);
       if (users[userName]) {
-        const fact = config.substring(process.env.CONFIG_ADD_FACT.length).trim();
+        const fact = config.substring(config.indexOf("-")).trim();
         users[userName].addMessage("system", fact); // Agregar el hecho al historial del usuario
         console.log("Hecho agregado al usuario:", userName, fact);
         return "Hecho agregado al usuario:" + userName + " " + fact;
       } else {
         // El usuario no ha sido creado aún, por lo tanto lo agregamos al contexto del usuario
         const fact = config.substring(process.env.CONFIG_ADD_FACT.length).trim();
+        console.log("Fact to add", fact);
         if (contextData.hasOwnProperty(userName)) {
           contextData[userName] += fact; // Actualizar el contexto del usuario
           //fs.writeFileSync("context.json", JSON.stringify(contextData, null, 2)); // Guardar el contexto actualizado en el archivo JSON
@@ -324,7 +327,7 @@ io.on("connection", (socket) => {
         console.log("Nuevo usuario creado:", msg.name);
 
         //msgText = `${selfContext} ${userContext} ${context} Sos Ariel, responde el siguiente mensaje de ${msg.name}: ${msgText}`;
-        newUser.addMessage("system", `${selfContext} ${userContext} ${context}`); // Agregar mensaje con rol "user"
+        newUser.addMessage("system", `${selfContext} \n ${context} \n ${userContext}`); // Agregar mensaje con rol "user"
 
         //msgText = `Responde el mensaje de ${msg.name}: ${msgText}`;
         // Dejamos el mensaje original
