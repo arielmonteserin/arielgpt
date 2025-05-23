@@ -56,6 +56,7 @@ try {
   context = contextData.context || ""; // Asignar el texto de la clave "context" a context
   unknownContext = contextData.unknown || ""; // Asignar el texto de la clave "unknown" a unknownContext
   console.log("Contexto cargado correctamente:", selfContext);
+  console.log("ContextData:", contextData);
 } catch (error) {
   console.error("Error al leer el archivo context.json:", error);
 }
@@ -178,7 +179,7 @@ function applyConfigurationChange(config, socket) {
 
     // Agrega un hecho al usuario
     if (config.startsWith(process.env.CONFIG_ADD_FACT)) {
-      const userName = config.substring(process.env.CONFIG_ADD_FACT.length, config.indexOf(".")).trim();
+      const userName = config.substring(process.env.CONFIG_ADD_FACT.length, config.indexOf("-")).trim();
       if (users[userName]) {
         const fact = config.substring(process.env.CONFIG_ADD_FACT.length).trim();
         users[userName].addMessage("system", fact); // Agregar el hecho al historial del usuario
