@@ -168,13 +168,13 @@
     // Enviar keepalive cada 5 minutos
     setInterval(() => {
       socket.emit("keepalive");
-    }, 300000); // 300000 ms = 5 minutos
+    }, 600000); // 300000 ms = 5 minutos
 
     setInterval(() => {
-    fetch('/ping')
+      fetch('https://arielgpt.onrender.com/ping')
       .then(() => console.log('ping enviado'))
-     .catch(err => console.error('fallo el ping:', err));
-    }, 5 * 60 * 1000); // cada 5 minutos
+      .catch(err => console.error('fallo el ping:', err));
+    }, 4 * 60 * 1000); // cada 5 minutos
   </script>
 </body>
 </html>

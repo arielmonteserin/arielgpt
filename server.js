@@ -452,7 +452,7 @@ async function generateBotAutomaticResponse() {
   return botResponseText;
 }
 
-let timeInterval = 300000; // Variable para controlar el intervalo de tiempo
+let timeInterval = 4 * 60 * 1000; // Variable para controlar el intervalo de tiempo
 
 // Comportamiento repetido cada 5 minutos
 setInterval(async () => {
