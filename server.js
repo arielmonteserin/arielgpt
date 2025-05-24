@@ -196,7 +196,7 @@ function applyConfigurationChange(config, socket) {
       } else {
         // El usuario no ha sido creado aún, por lo tanto lo agregamos al contexto del usuario
         if (contextData.hasOwnProperty(userName)) {
-          contextData[userName] += fact; // Actualizar el contexto del usuario
+          contextData[userName] += " " + fact; // Actualizar el contexto del usuario
           //fs.writeFileSync("context.json", JSON.stringify(contextData, null, 2)); // Guardar el contexto actualizado en el archivo JSON
           console.log("Hecho agregado al usuario:", userName, fact);
           return "Hecho agregado al usuario:" + userName + " " + fact;
@@ -398,10 +398,11 @@ io.on("connection", (socket) => {
     // Por ejemplo, reenviar la imagen a la tablet:
     if (tabletSocketId) {
       io.to(tabletSocketId).emit("receive_message", {
-        name: data.name,
+        name: data.name.substring(1), // Eliminar el símbolo "#" del nombre
         text: " ",
         imgData: data.imgData
       });
+      io.to(tabletSocketId).emit("receive_message", { name: "ArielGPT", text: "👆"});
     }
     // También puedes guardar la imagen en disco si lo deseas:
     // const base64Data = data.imgData.replace(/^data:image\/\w+;base64,/, "");
