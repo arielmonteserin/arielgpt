@@ -181,16 +181,14 @@ function applyConfigurationChange(config, socket) {
     // Agrega un hecho al usuario
     if (config.startsWith(process.env.CONFIG_ADD_FACT)) {
       const userName = config.substring(process.env.CONFIG_ADD_FACT.length, config.indexOf("-")).trim();
-      console.log("UserName add", userName);
+      //console.log("UserName add", userName);
+      const fact = config.substring(config.indexOf("-")).trim();
       if (users[userName]) {
-        const fact = config.substring(config.indexOf("-")).trim();
         users[userName].addMessage("system", fact); // Agregar el hecho al historial del usuario
         console.log("Hecho agregado al usuario:", userName, fact);
         return "Hecho agregado al usuario:" + userName + " " + fact;
       } else {
         // El usuario no ha sido creado aún, por lo tanto lo agregamos al contexto del usuario
-        const fact = config.substring(process.env.CONFIG_ADD_FACT.length).trim();
-        console.log("Fact to add", fact);
         if (contextData.hasOwnProperty(userName)) {
           contextData[userName] += fact; // Actualizar el contexto del usuario
           //fs.writeFileSync("context.json", JSON.stringify(contextData, null, 2)); // Guardar el contexto actualizado en el archivo JSON
@@ -403,6 +401,11 @@ io.on("connection", (socket) => {
     // const base64Data = data.imgData.replace(/^data:image\/\w+;base64,/, "");
     // fs.writeFileSync(`uploads/${Date.now()}_${data.name}.png`, base64Data, {encoding: 'base64'});
     console.log(`Imagen recibida de ${data.name}`);
+  });
+
+  // Manejar keepalive de la tablet
+  socket.on("keepalive", () => {
+    console.log("Keepalive recibido de la tablet:", socket.id, new Date().toISOString());
   });
 });
 

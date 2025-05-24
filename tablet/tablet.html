@@ -164,6 +164,11 @@
       colorfulButton.style.display = "none";
       fullscreenButton.style.display = "none";
     });
+
+    // Enviar keepalive cada 5 minutos
+    setInterval(() => {
+      socket.emit("keepalive");
+    }, 300000); // 300000 ms = 5 minutos
   </script>
 </body>
 </html>
