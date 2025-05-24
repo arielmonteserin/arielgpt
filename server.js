@@ -22,6 +22,12 @@ const io = new Server(server, {
 app.use(express.json());
 app.use(cors());
 
+// Agregar endpoint /ping para healthcheck
+app.get('/ping', (req, res) => {
+  res.status(200).send('pong');
+  console.log("Ping recibido");
+});
+
 let messages = [];
 let tabletSocketId = null; // Almacenamos el socket.id de la tablet
 
@@ -182,7 +188,7 @@ function applyConfigurationChange(config, socket) {
     if (config.startsWith(process.env.CONFIG_ADD_FACT)) {
       const userName = config.substring(process.env.CONFIG_ADD_FACT.length, config.indexOf("-")).trim();
       //console.log("UserName add", userName);
-      const fact = config.substring(config.indexOf("-")).trim();
+      const fact = config.substring(config.indexOf("-") + 1).trim();
       if (users[userName]) {
         users[userName].addMessage("system", fact); // Agregar el hecho al historial del usuario
         console.log("Hecho agregado al usuario:", userName, fact);
