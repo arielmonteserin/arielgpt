@@ -102,7 +102,11 @@ async function generateBotResponse(user) {
   }
 
   // Separar el último mensaje del historial previo
-  const history = contents.slice(0, -1);
+  // Gemini requiere que el historial empiece siempre con role "user"
+  let history = contents.slice(0, -1);
+  while (history.length > 0 && history[0].role !== "user") {
+    history = history.slice(1);
+  }
   const lastMessage = contents[contents.length - 1].parts[0].text;
 
   try {
