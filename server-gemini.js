@@ -41,7 +41,7 @@ let automatic_mode = "start";
 
 let selfContext = "";
 let context = "";
-let modelGemini = "gemini-2.0-flash";
+let modelGemini = "gemini-3.1-flash-lite"; //"gemini-2.0-flash";
 let temperatureGemini = 0.5;
 let maxTokensGemini = 1024;
 let contextData = "{}";
@@ -173,12 +173,12 @@ function applyConfigurationChange(config, socket) {
     if (config.startsWith(process.env.CONFIG_SET_LLM)) {
       const newModel = config.substring(process.env.CONFIG_SET_LLM.length).trim();
       switch (newModel) {
-        case "0": modelGemini = "gemini-2.5-pro"; break;
-        case "1": modelGemini = "gemini-2.0-flash"; break;
-        case "2": modelGemini = "gemini-2.0-flash-lite"; break;
-        case "3": modelGemini = "gemini-1.5-pro"; break;
-        case "4": modelGemini = "gemini-1.5-flash"; break;
-        case "5": modelGemini = "gemini-1.5-flash-8b"; break;
+        case "0": modelGemini = "gemini-3.1-flash-lite"; break;
+        case "1": modelGemini = "gemini-3.5-flash-lite"; break;
+        case "2": modelGemini = "gemma-4-26B"; break;
+        case "3": modelGemini = "gemma-4-31B"; break;
+        case "4": modelGemini = "gemini-2.5-flash"; break;
+        case "5": modelGemini = "gemini-2.5-flash-lite"; break;
         default: return "Modelo no válido";
       }
       console.log("Nuevo modelo configurado:", modelGemini);
