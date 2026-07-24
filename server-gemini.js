@@ -179,9 +179,9 @@ function applyConfigurationChange(config, socket) {
       switch (newModel) {
         case "0": modelGemini = "gemini-3.1-flash-lite"; break;
         case "1": modelGemini = "gemini-3.5-flash-lite"; break;
-        case "2": modelGemini = "google/gemma-4-26b"; break;
-        case "3": modelGemini = "google/gemma-4-31b"; break;
-        case "4": modelGemini = "gemini-2.5-flash"; break;
+        case "2": modelGemini = "models/gemma-4-26b-a4b-it"; break;
+        case "3": modelGemini = "models/gemma-4-31b-it"; break;
+        case "4": modelGemini = "models/gemini-2.5-flash"; break;
         case "5": modelGemini = "gemini-2.5-flash-lite"; break;
         default: return "Modelo no válido";
       }
