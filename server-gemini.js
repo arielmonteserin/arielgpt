@@ -121,7 +121,17 @@ async function generateBotResponse(user) {
 
     const chat = model.startChat({ history });
     const result = await chat.sendMessage(lastMessage);
-    const text = result.response.text();
+    let text = result.response.text();
+    // Los modelos Gemma a veces envuelven la respuesta del personaje entre comillas
+    // seguida de narración con asteriscos. Si es un modelo Gemma y el texto contiene
+    // asteriscos, extraemos solo el fragmento posterior a la última comilla doble.
+    if (modelGemini.includes("gemma") && text.includes("*")) {
+      const lastQuoteIndex = text.lastIndexOf('"');
+      console.log("Respuesta generada por Gemini eliminada:", text);
+      if (lastQuoteIndex !== -1) {
+        text = text.substring(lastQuoteIndex + 1).trim();
+      }
+    }
     console.log("Respuesta generada por Gemini:", text);
     return text;
   } catch (error) {
