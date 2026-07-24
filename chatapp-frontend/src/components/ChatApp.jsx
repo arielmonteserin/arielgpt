@@ -147,7 +147,7 @@ export default function ChatApp() {
       {/* Header */}
       <header className="text-2xl font-bold bg-[#10A37F] p-4 shadow-lg text-center flex-shrink-0">
         <span className="animate-bounce bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-white inline-flex items-center gap-2">
-          🎉 <span className="animate-pulse">¡Matu cumple 18!</span> 🥳
+          🎉 <span className="animate-pulse">Joaqui cumple 20!</span> 🥳
         </span>
       </header>
 
@@ -157,7 +157,7 @@ export default function ChatApp() {
           {!loggedIn ? (
             <div className="text-center p-4">
               <div className="mb-4 text-lg font-semibold text-purple-700">
-                ¡Bienvenido a los 18 de Matu (Toto para los amigos)! Ingresá tu nombre y la contraseña para chatear con ArielGPT.
+                ¡Bienvenido a los 20 de Joaqui! Ingresá tu nombre y la contraseña para chatear con ArielGPT.
               </div>
               {/* DropDownList de nombres reales */}
               <select
