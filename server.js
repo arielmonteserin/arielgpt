@@ -50,7 +50,7 @@ let automatic_mode = "start";
 let selfContext = ""; // Constante para almacenar el texto de la clave "self"
 let context = "";
 //let modelGroq = "llama-3.3-70b-versatile"; // Modelo sugerido
-let modelGroq = "gemma2-9b-it";
+let modelGroq = "openai/gpt-oss-120b"//"gemma2-9b-it";
 let temperatureGroq = 0.5; // Controla la aleatoriedad de la respuesta
 let frequency_penaltyGroq = 2;
 let contextData = "{}"; // Inicializar contextData como un objeto vacío
@@ -146,12 +146,13 @@ function applyConfigurationChange(config, socket) {
     if (config.startsWith(process.env.CONFIG_SET_LLM)) {
       const newModel = config.substring(process.env.CONFIG_SET_LLM.length).trim();
       switch (newModel) {
-        case "0": modelGroq = "gemma2-9b-it"; break;
-        case "1": modelGroq = "llama3-70b-8192"; break;
+        case "0": modelGroq = "openai/gpt-oss-120b"; break;
+        case "1": modelGroq = "groq/compound"; break;
         case "2": modelGroq = "llama-3.1-8b-instant"; break;
-        case "3": modelGroq = "llama-guard-3-8b"; break; modelGroq = newModel;
-        case "4": modelGroq = "mistral-saba-24b"; break;
+        case "3": modelGroq = "meta-llama/llama-prompt-guard-2-86m"; break; modelGroq = newModel;
+        case "4": modelGroq = "openai/gpt-oss-20b"; break;
         case "5": modelGroq = "llama-3.3-70b-versatile"; break;
+        case "6": modelGroq = "meta-llama/llama-prompt-guard-2-22m"; break;
         default: return false; // Modelo no válido
       }
       console.log("Nuevo modelo configurado:", modelGroq);
