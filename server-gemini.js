@@ -149,6 +149,12 @@ async function generateBotSummary(user) {
 
   const summaryRequest = "Resume los mensajes anteriores. Haz foco en los hechos relevantes que comentó el usuario.";
 
+  // Gemini requiere que el historial empiece siempre con role "user"
+  let history = contents;
+  while (history.length > 0 && history[0].role !== "user") {
+    history = history.slice(1);
+  }
+
   try {
     const model = genAI.getGenerativeModel({
       model: modelGemini,
@@ -159,12 +165,12 @@ async function generateBotSummary(user) {
       }
     });
 
-    const chat = model.startChat({ history: contents });
+    const chat = model.startChat({ history });
     const result = await chat.sendMessage(summaryRequest);
-    return result.response.text() || "ERROR";
+    return result.response.text() || "ERROR RESUMEN";
   } catch (error) {
     console.error("Error al generar resumen con Gemini:", error);
-    return "ERROR";
+    return "ERROR RESUMEN";
   }
 }
 
