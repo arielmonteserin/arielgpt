@@ -84,8 +84,7 @@ async function generateBotResponse(userState, inputText) {
                 system_instruction: userState.systemInstruction,
                 generation_config: {
                     temperature: temperatureGemini,
-                    max_output_tokens: maxTokensGemini,
-                    thinking_level: thinkingLevelGemini
+                    max_output_tokens: maxTokensGemini
                 }
             };
         } else {
