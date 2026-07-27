@@ -89,12 +89,12 @@ async function generateBotResponse(userState, inputText) {
     };
 
     if (userState.lastInteractionId) {
-      params.previousInteractionId = userState.lastInteractionId;
+      params.previous_interaction_id = userState.lastInteractionId;
     }
 
     const interaction = await client.interactions.create(params);
 
-    let text = interaction.outputText || "No se pudo generar una respuesta.";
+    let text = interaction.output_text || "No se pudo generar una respuesta.";
 
     // Los modelos Gemma a veces envuelven la respuesta entre comillas
     // seguida de narración con asteriscos. Extraemos el texto posterior a la
