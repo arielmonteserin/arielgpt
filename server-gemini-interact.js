@@ -41,7 +41,7 @@ let selfContext = "";
 let context = "";
 let modelGemini = "gemini-3.1-flash-lite";
 let temperatureGemini = 1.0;
-let thinkingLevelGemini = "minimal"; // minimal, low, medium, high
+let thinkingLevelGemini = "low"; // minimal, low, medium, high
 let thinkingSummaryGemini = "none"; // auto, none
 let maxTokensGemini = 1024;
 let contextData = "{}";
@@ -206,6 +206,8 @@ function applyConfigurationChange(config, socket) {
         - Modelo: ${modelGemini}
         - Max Tokens: ${maxTokensGemini}
         - Modo: ${automatic_mode}
+        - Nivel de pensamiento: ${thinkingLevelGemini}
+        - Resumen de pensamiento: ${thinkingSummaryGemini}
       `;
       console.log("Configuración actual:", currentConfig);
       return "Configuración actual:\n" + currentConfig;
@@ -239,6 +241,30 @@ function applyConfigurationChange(config, socket) {
       socket.emit("enable_img");
       console.log("Imagen habilitada");
       return "Imagen habilitada";
+    }
+
+    // Cambia el nivel de pensamiento
+    if (config.startsWith(process.env.CONFIG_SET_THINKING_LEVEL)) {
+      const newLevel = config.substring(process.env.CONFIG_SET_THINKING_LEVEL.length).trim();
+      if (["minimal", "low", "medium", "high"].includes(newLevel)) {
+        thinkingLevelGemini = newLevel;
+        console.log("Nivel de pensamiento cambiado a:", newLevel);
+        return "Nivel de pensamiento cambiado a:" + newLevel;
+      } else {
+        return "Error: Nivel de pensamiento no válido.";
+      }
+    }
+
+    // Cambia el resumen de pensamiento
+    if (config.startsWith(process.env.CONFIG_SET_THINKING_SUMMARY)) {
+      const newSummary = config.substring(process.env.CONFIG_SET_THINKING_SUMMARY.length).trim();
+      if (["auto", "none"].includes(newSummary)) {
+        thinkingSummaryGemini = newSummary;
+        console.log("Resumen de pensamiento cambiado a:", newSummary);
+        return "Resumen de pensamiento cambiado a:" + newSummary;
+      } else {
+        return "Error: Resumen de pensamiento no válido.";
+      }
     }
 
     return "Comando no reconocido.";
