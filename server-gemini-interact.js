@@ -41,6 +41,8 @@ let selfContext = "";
 let context = "";
 let modelGemini = "gemini-3.1-flash-lite";
 let temperatureGemini = 1.0;
+let thinkingLevelGemini = "minimal"; // minimal, low, medium, high
+let thinkingSummaryGemini = "none"; // auto, none
 let maxTokensGemini = 1024;
 let contextData = "{}";
 
@@ -77,10 +79,12 @@ async function generateBotResponse(userState, inputText) {
     const params = {
       model: modelGemini,
       input: inputText,
-      config: {
-        systemInstruction: userState.systemInstruction,
+      system_instruction: userState.systemInstruction,
+      generation_config: {
         temperature: temperatureGemini,
-        maxOutputTokens: maxTokensGemini
+        max_output_tokens: maxTokensGemini,
+        thinking_level: thinkingLevelGemini,
+        thinking_summary: thinkingSummaryGemini
       }
     };
 
