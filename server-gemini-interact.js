@@ -148,7 +148,7 @@ function applyConfigurationChange(config, socket) {
             const newModel = config.substring(process.env.CONFIG_SET_LLM.length).trim();
             switch (newModel) {
                 case "0": modelGemini = "gemini-3.1-flash-lite"; break;
-                case "1": modelGemini = "gemini-3.5-flash"; break;
+                case "1": modelGemini = "gemini-3.5-flash-lite"; break;
                 case "2": modelGemini = "gemma-4-26b-a4b-it"; break;
                 case "3": modelGemini = "gemma-4-31b-it"; break;
                 case "4": modelGemini = "gemini-2.5-flash"; break;
