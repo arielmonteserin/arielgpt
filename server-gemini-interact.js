@@ -84,7 +84,7 @@ async function generateBotResponse(userState, inputText) {
         temperature: temperatureGemini,
         max_output_tokens: maxTokensGemini,
         thinking_level: thinkingLevelGemini,
-        thinking_summary: thinkingSummaryGemini
+        thinking_summaries: thinkingSummaryGemini
       }
     };
 
