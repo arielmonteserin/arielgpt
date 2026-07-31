@@ -28,11 +28,16 @@ app.get('/ping', (req, res) => {
 
 let tabletSocketId = null;
 
-// Configuración del cliente con la API de Interactions
-const client = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+// Configuración de los 3 clientes con la API de Interactions (rotación por usuario)
+const clients = [
+    new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }),
+    new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY_1 }),
+    new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY_2 })
+];
+let clientIndex = 0; // Índice rotativo para asignar clientes a nuevos usuarios
 
 // Estado por usuario: el historial lo gestiona el servidor via previous_interaction_id
-// users[name] = { systemInstruction, lastInteractionId, contUserMessages }
+// users[name] = { systemInstruction, lastInteractionId, contUserMessages, client }
 const users = {};
 
 let automatic_mode = "start";
@@ -57,11 +62,11 @@ try {
     console.error("Error al leer el archivo context.json:", error);
 }
 
-// Estado para los usuarios del modo automático
+// Estado para los usuarios del modo automático (cada uno recibe un cliente en orden)
 const autoModeUsers = {
-    start: { systemInstruction: `${selfContext} ${context} ${contextData.userModeStart}`, lastInteractionId: null },
-    cena: { systemInstruction: `${selfContext} ${context} ${contextData.userModeCena}`, lastInteractionId: null },
-    baile: { systemInstruction: `${selfContext} ${context} ${contextData.userModeBaile}`, lastInteractionId: null }
+    start: { systemInstruction: `${selfContext} ${context} ${contextData.userModeStart}`, lastInteractionId: null, client: clients[clientIndex++ % clients.length] },
+    cena:  { systemInstruction: `${selfContext} ${context} ${contextData.userModeCena}`,  lastInteractionId: null, client: clients[clientIndex++ % clients.length] },
+    baile: { systemInstruction: `${selfContext} ${context} ${contextData.userModeBaile}`, lastInteractionId: null, client: clients[clientIndex++ % clients.length] }
 };
 
 /**
@@ -105,7 +110,7 @@ async function generateBotResponse(userState, inputText) {
             params.previous_interaction_id = userState.lastInteractionId;
         }
 
-        const interaction = await client.interactions.create(params);
+        const interaction = await userState.client.interactions.create(params);
 
         let text = interaction.output_text || "No se pudo generar una respuesta.";
 
@@ -331,9 +336,10 @@ io.on("connection", (socket) => {
                 users[msg.name] = {
                     systemInstruction: `${selfContext}\n${context}\n${userContext}`,
                     lastInteractionId: null,
-                    contUserMessages: 0
+                    contUserMessages: 0,
+                    client: clients[clientIndex++ % clients.length]
                 };
-                console.log("Nuevo usuario creado:", msg.name);
+                console.log("Nuevo usuario creado:", msg.name, "| cliente índice:", (clientIndex - 1) % clients.length);
             }
 
             const userState = users[msg.name];
