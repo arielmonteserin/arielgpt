@@ -32,7 +32,8 @@ let tabletSocketId = null;
 const clients = [
     new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }),
     new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY_1 }),
-    new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY_2 })
+    new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY_2 }),
+    new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY_3 })
 ];
 let clientIndex = 0; // Índice rotativo para asignar clientes a nuevos usuarios
 
