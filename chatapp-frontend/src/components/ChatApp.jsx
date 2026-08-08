@@ -215,7 +215,7 @@ export default function ChatApp() {
               </div>
               <div className="mt-auto flex flex-col gap-2 p-2 bg-gradient-to-r from-purple-200 via-pink-200 to-red-200 w-full">
                 <textarea
-                  placeholder="Escribe un mensaje..."
+                  placeholder="Escribe un mensaje para ArielGPT..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   className="w-full min-h-[3.5rem] max-h-32 p-3 border-2 border-purple-400 rounded resize-none text-center bg-white focus:outline-none focus:ring-2 focus:ring-purple-400"
@@ -269,7 +269,7 @@ export default function ChatApp() {
 
       {/* Footer */}
       <footer className="text-sm bg-gray-800 p-4 shadow-lg text-center flex-shrink-0">
-        ArielGPT - Todos los izquierdos reservados
+        ArielGPT 2026 - Todos los izquierdos reservados
       </footer>
     </div>
   );
